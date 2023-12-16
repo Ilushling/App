@@ -1,0 +1,25 @@
+{
+  "name": "entryx",
+  "version": "1.0.0",
+  "description": "App",
+  "type": "module",
+  "author": "Ilushling",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "app"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ilushling/App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ilushling/App/issues"
+  },
+  "homepage": "https://github.com/Ilushling/App#readme",
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  }
+}
