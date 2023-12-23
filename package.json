@@ -5,6 +5,7 @@
   "type": "module",
   "author": "Ilushling",
   "license": "MIT",
+  "main": "./src/App.js",
   "scripts": {
     "test": "node --test"
   },
@@ -20,6 +21,6 @@
   },
   "homepage": "https://github.com/Ilushling/App#readme",
   "devDependencies": {
-    "@types/node": "^20.10.4"
+    "@types/node": "^20.10.5"
   }
 }
