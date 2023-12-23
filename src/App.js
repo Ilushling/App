@@ -1,12 +1,24 @@
 /**
- * @typedef {{ setup?: (params: any) => any }} Component
+ * @typedef {{ setup?: (params?: { configs: unknown, resources: unknown }) => any }} Component
  * @typedef {Record<string, Component>} Components
  * 
- * @typedef {{ run: () => any }} AppInterface
+ * @typedef {{ run: (params?: { configs: unknown, resources: unknown }) => any }} AppInterface
  * @typedef {Record<string, AppInterface>} Interfaces
  * 
- * @typedef {Record<string, unknown>} Configs
- * @typedef {Record<string, unknown>} Resources
+ * @typedef {object} Configs
+ * @property {ComponentConfigs=} components
+ * @property {InterfaceConfigs=} interfaces
+ * 
+ * @typedef {Record<string, unknown>} ComponentConfigs
+ * @typedef {Record<string, unknown>} InterfaceConfigs
+ * 
+ * @typedef {object} Resources
+ * @property {ComponentResources=} components
+ * @property {InterfaceResources=} interfaces
+ * 
+ * @typedef {Record<string, unknown>} ComponentResources
+ * @typedef {Record<string, unknown>} InterfaceResources
+ * 
  */
 
 /**
@@ -14,8 +26,8 @@
  * @property {Components} components
  * @property {Interfaces} interfaces
  * 
- * @property {Configs} configs
- * @property {Resources} resources
+ * @property {Configs=} configs
+ * @property {Resources=} resources
  */
 export default class App {
   /** @type {Components} */
@@ -24,10 +36,10 @@ export default class App {
   /** @type {Interfaces} */
   #interfaces;
 
-  /** @type {Configs} */
+  /** @type {Configs=} */
   #configs;
 
-  /** @type {Resources} */
+  /** @type {Resources=} */
   #resources;
 
   /** @param {AppParams} params */
@@ -76,35 +88,58 @@ export default class App {
     const configs = this.#getConfigs();
     const resources = this.#getResources();
 
-    await this.#setup({ components, configs, resources });
+    await this.#setup({
+      components,
+      configs: configs?.components,
+      resources: resources?.components
+    });
 
-    await this.#runInterfaces(interfaces);
+    await this.#runInterfaces({
+      interfaces,
+      configs: configs?.interfaces,
+      resources: resources?.interfaces
+    });
   }
 
   /**
    * @param {object} params
    * @param {Components} params.components
-   * @param {Configs} params.configs
-   * @param {Resources} params.resources
+   * @param {ComponentConfigs=} params.configs
+   * @param {ComponentResources=} params.resources
    */
   async #setup({ components, configs, resources }) {
     await Promise.allSettled(
       Object.entries(components).map(
-        ([componentName, component]) =>
-          component?.setup?.({
-            configs: configs[componentName],
-            resources: resources[componentName]
-          })
+        ([componentName, component]) => {
+          const componentConfigs = configs?.[componentName];
+          const componentResources = resources?.[componentName];
+
+          component.setup?.({
+            configs: componentConfigs,
+            resources: componentResources
+          });
+        }
       )
     );
   }
 
   /**
-   * @param {Interfaces} interfaces
+   * @param {object} params
+   * @param {Interfaces} params.interfaces
+   * @param {InterfaceConfigs=} params.configs
+   * @param {InterfaceResources=} params.resources
    */
-  async #runInterfaces(interfaces) {
+  async #runInterfaces({ interfaces, configs, resources }) {
     await Promise.allSettled(
-      Object.values(interfaces).map(appInterface => appInterface.run())
+      Object.entries(interfaces).map(([interfaceName, appInterface]) => {
+        const interfaceConfigs = configs?.[interfaceName];
+        const interfaceResources = resources?.[interfaceName];
+
+        return appInterface.run({
+          configs: interfaceConfigs,
+          resources: interfaceResources
+        });
+      })
     );
   }
 }
