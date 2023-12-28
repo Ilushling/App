@@ -1,29 +1,29 @@
 /**
- * @typedef {{ setup?: (params?: Partial<{ configs: unknown, resources: unknown, secrets: unknown }>) => any }} Component
+ * @typedef {{ setup?: (params: { configs: any, resources: any, secrets: any }) => any }} Component
  * @typedef {Record<string, Component>} Components
  * 
- * @typedef {{ run: (params?: Partial<{ configs: unknown, resources: unknown, secrets: unknown }>) => any }} AppInterface
+ * @typedef {{ run: (params: { configs: any, resources: any, secrets: any }) => any }} AppInterface
  * @typedef {Record<string, AppInterface>} Interfaces
  * 
  * @typedef {object} Configs
  * @property {ComponentConfigs=} components
  * @property {InterfaceConfigs=} interfaces
  * 
- * @typedef {Record<string, unknown>} ComponentConfigs
- * @typedef {Record<string, unknown>} InterfaceConfigs
+ * @typedef {Record<string, any>} ComponentConfigs
+ * @typedef {Record<string, any>} InterfaceConfigs
  * 
  * @typedef {object} Resources
  * @property {ComponentResources=} components
  * @property {InterfaceResources=} interfaces
  * 
- * @typedef {Record<string, unknown>} ComponentResources
- * @typedef {Record<string, unknown>} InterfaceResources
+ * @typedef {Record<string, any>} ComponentResources
+ * @typedef {Record<string, any>} InterfaceResources
  * 
  * @typedef {object} Secrets
  * @property {ComponentSecrets=} components
  * @property {InterfaceSecrets=} interfaces
- * @typedef {Record<string, unknown>} ComponentSecrets
- * @typedef {Record<string, unknown>} InterfaceSecrets
+ * @typedef {Record<string, any>} ComponentSecrets
+ * @typedef {Record<string, any>} InterfaceSecrets
  */
 
 /**
