@@ -1,5 +1,5 @@
 /**
- * @typedef {{ setup?: (params: { configs: any, resources: any, secrets: any }) => any }} Component
+ * @typedef {{ setup?: (params: { configs: any, resources: any, secrets: any }) => any } | Record<any, any>} Component
  * @typedef {Record<string, Component>} Components
  * 
  * @typedef {{ run: (params: { configs: any, resources: any, secrets: any }) => any }} AppInterface
@@ -25,93 +25,27 @@
  * @typedef {Record<string, any>} ComponentSecrets
  * @typedef {Record<string, any>} InterfaceSecrets
  */
-
-/**
- * @typedef {object} AppParams
- * @property {Components} components
- * @property {Interfaces} interfaces
- * 
- * @property {Configs=} configs
- * @property {Resources=} resources
- * @property {Secrets=} secrets
- */
 export default class App {
-  /** @type {Components} */
-  #components;
-
-  /** @type {Interfaces} */
-  #interfaces;
-
-  /** @type {Configs=} */
-  #configs;
-
-  /** @type {Resources=} */
-  #resources;
-
-  /** @type {Secrets=} */
-  #secrets;
-
-  /** @param {AppParams} params */
-  constructor({
+  /**
+   * @param {object} params
+   * @param {Components} params.components
+   * @param {Interfaces} params.interfaces
+   * 
+   * @param {Configs=} params.configs
+   * @param {Resources=} params.resources
+   * @param {Secrets=} params.secrets
+   */
+  async run({
     components,
     interfaces,
 
     configs,
-    resources
+    resources,
+    secrets
   }) {
-    this.#components = components;
-    this.#interfaces = interfaces;
-
-    this.#configs = configs;
-    this.#resources = resources;
-  }
-
-  #getConfigs() {
-    return this.#configs;
-  }
-
-  /**
-   * @param {Configs} configs
-   */
-  setConfigs(configs) {
-    this.#configs = configs;
-  }
-
-
-  #getResources() {
-    return this.#resources;
-  }
-
-  /**
-   * @param {Resources} resources
-   */
-  setResources(resources) {
-    this.#resources = resources;
-  }
-
-
-  #getSecrets() {
-    return this.#secrets;
-  }
-
-  /**
-   * @param {Secrets} secrets
-   */
-  setSecrets(secrets) {
-    this.#secrets = secrets;
-  }
-
-
-  async run() {
-    const components = this.#components;
-    const interfaces = this.#interfaces;
-
-    const configs = this.#getConfigs();
-    const resources = this.#getResources();
-    const secrets = this.#getSecrets();
-
     await this.#setup({
       components,
+
       configs: configs?.components,
       resources: resources?.components,
       secrets: secrets?.components
@@ -119,6 +53,7 @@ export default class App {
 
     await this.#runInterfaces({
       interfaces,
+
       configs: configs?.interfaces,
       resources: resources?.interfaces,
       secrets: secrets?.interfaces
@@ -128,11 +63,18 @@ export default class App {
   /**
    * @param {object} params
    * @param {Components} params.components
+   * 
    * @param {ComponentConfigs=} params.configs
    * @param {ComponentResources=} params.resources
    * @param {ComponentSecrets=} params.secrets
    */
-  async #setup({ components, configs, resources, secrets }) {
+  async #setup({
+    components,
+
+    configs,
+    resources,
+    secrets
+  }) {
     await Promise.allSettled(
       Object.entries(components).map(
         ([componentName, component]) => {
@@ -153,11 +95,18 @@ export default class App {
   /**
    * @param {object} params
    * @param {Interfaces} params.interfaces
+   * 
    * @param {InterfaceConfigs=} params.configs
    * @param {InterfaceResources=} params.resources
    * @param {InterfaceSecrets=} params.secrets
    */
-  async #runInterfaces({ interfaces, configs, resources, secrets }) {
+  async #runInterfaces({
+    interfaces,
+
+    configs,
+    resources,
+    secrets
+  }) {
     await Promise.allSettled(
       Object.entries(interfaces).map(([interfaceName, appInterface]) => {
         const interfaceConfigs = configs?.[interfaceName];

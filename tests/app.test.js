@@ -4,30 +4,14 @@ import { describe, it } from 'node:test';
 import App from '../src/App.js';
 
 /**
- * @typedef {import('../src/App.js').AppParams} AppParams
- * 
  * @typedef {import('../src/App.js').Components} Components
  * @typedef {import('../src/App.js').Interfaces} Interfaces
  * @typedef {import('../src/App.js').Configs} Configs
  * @typedef {import('../src/App.js').Resources} Resources
  */
 
-/** @param {AppParams} params */
-function createApp({
-  components,
-  interfaces,
-
-  configs,
-  resources
-}) {
-
-  return new App({
-    components,
-    interfaces,
-
-    configs,
-    resources
-  });
+function createApp() {
+  return new App();
 }
 
 describe('App', async () => {
@@ -57,15 +41,15 @@ describe('App', async () => {
   const configs = /** @type {Configs} */ ({});
   const resources = /** @type {Resources} */ ({});
 
-  const app = createApp({
+  const app = createApp();
+
+  await app.run({
     components,
     interfaces,
 
     configs,
     resources
   });
-
-  await app.run();
 
   it('Components setup', () => {
     assert.strictEqual(aComponent, 1);
