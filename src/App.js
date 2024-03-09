@@ -28,7 +28,7 @@
 export default class App {
   /**
    * @param {object} params
-   * @param {Components} params.components
+   * @param {Components=} params.components
    * @param {Interfaces} params.interfaces
    * 
    * @param {Configs=} params.configs
@@ -43,13 +43,15 @@ export default class App {
     resources,
     secrets
   }) {
-    await this.#setup({
-      components,
+    if (components != null) {
+      await this.#setup({
+        components,
 
-      configs: configs?.components,
-      resources: resources?.components,
-      secrets: secrets?.components
-    });
+        configs: configs?.components,
+        resources: resources?.components,
+        secrets: secrets?.components
+      });
+    }
 
     await this.#runInterfaces({
       interfaces,
